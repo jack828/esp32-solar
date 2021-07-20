@@ -9,24 +9,28 @@ TFT_eSPI tft = TFT_eSPI();
 
 void setup() {
   Serial.begin(115200);
+
+  initTft();
+
   WiFi.mode(WIFI_STA);
-  wifiMulti.addAP(WIFI_SSID, WIFI_PSK);
-  wifiMulti.addAP(WIFI_SSID, WIFI_PSK);
+  wifiMulti.addAP(WIFI_SSID_1, WIFI_PSK_1);
+  wifiMulti.addAP(WIFI_SSID_2, WIFI_PSK_2);
+  wifiMulti.addAP(WIFI_SSID_3, WIFI_PSK_3);
 
   Serial.print(F("[ WIFI ] Connecting"));
   int retryCount = 0;
   while (wifiMulti.run() != WL_CONNECTED) {
     Serial.print(F("."));
-    digitalWrite(LED_PIN, HIGH);
     delay(250);
-    digitalWrite(LED_PIN, LOW);
+    Serial.print(F("."));
     delay(250);
-    digitalWrite(LED_PIN, HIGH);
+    Serial.print(F("."));
     delay(250);
-    digitalWrite(LED_PIN, LOW);
+    Serial.print(F("."));
     delay(250);
     if (retryCount++ > 20) {
       Serial.println(F("\n[ WIFI ] ERROR: Could not connect to wifi, rebooting..."));
+      Serial.flush();
       ESP.restart();
     }
   }
@@ -47,8 +51,9 @@ void loop() {
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
   // We can now plot text on screen using the "print" class
-  tft.println("Intialised default\n");
-  tft.println("White text");
+  tft.println("Initialised default\n");
+  tft.print("IP: ");
+  tft.println(WiFi.localIP());
 
   tft.setTextColor(TFT_RED, TFT_BLACK);
   tft.println("Red text");
