@@ -2,8 +2,13 @@
 #include <SPI.h>
 #include <TFT_eSPI.h>
 #include <WiFiMulti.h>
+#include <WiFiUdp.h>
+#include <NTPClient.h>
 
 WiFiMulti wifiMulti;
+WiFiUDP ntpUDP;
+// TODO timezone
+NTPClient timeClient(ntpUDP, "uk.pool.ntp.org", 0, 1000);
 
 TFT_eSPI tft = TFT_eSPI();
 
@@ -39,10 +44,11 @@ void setup() {
   Serial.print(F(", IP:"));
   Serial.println(WiFi.localIP());
   Serial.println();
+
+  initNtp();
 }
 
 void loop() {
-  tft.fillScreen(TFT_BLACK);
 
   // Set "cursor" at top left corner of display (0,0) and select font 4
   tft.setCursor(0, 0, 4);
@@ -55,20 +61,35 @@ void loop() {
   tft.print("IP: ");
   tft.println(WiFi.localIP());
 
-  tft.setTextColor(TFT_RED, TFT_BLACK);
-  tft.println("Red text");
+  /* tft.setTextColor(TFT_RED, TFT_BLACK); */
+  /* tft.println("Red text"); */
+  /* tft.setTextColor(TFT_GREEN, TFT_BLACK); */
+  /* tft.println("Green text"); */
+  /* tft.setTextColor(TFT_BLUE, TFT_BLACK); */
+  /* tft.println("Blue text"); */
 
-  tft.setTextColor(TFT_GREEN, TFT_BLACK);
-  tft.println("Green text");
+  tft.print("Time: ");
+  tft.println(timeClient.getFormattedTime());
+  tft.print("Epoch: ");
+  tft.println(timeClient.getEpochTime());
 
-  tft.setTextColor(TFT_BLUE, TFT_BLACK);
-  tft.println("Blue text");
-
-  delay(5000);
+  /* delay(1000); */
 }
 
 void initTft() {
   tft.init();
 
   tft.setRotation(3);
+  tft.fillScreen(TFT_BLACK);
+}
+
+void initNtp() {
+  timeClient.begin();
+  while (!timeClient.update()) {
+    timeClient.forceUpdate();
+  }
+  Serial.print("[ NTP ] time: ");
+  Serial.println(timeClient.getFormattedTime());
+  Serial.print("[ NTP ] epoch: ");
+  Serial.println(timeClient.getEpochTime());
 }
