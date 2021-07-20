@@ -18,6 +18,8 @@ Install Bodmer's TFT_eSPI library and:
  - in `User_Setup.h`
    - Change the contents to the one in this repo.
 
+Install NTPClient
+
 ## Credits
 
 Lots of code and main inspiration from dr-mod's repo! https://github.com/dr-mod/pico-solar-system

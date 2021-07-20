@@ -8,7 +8,7 @@
 WiFiMulti wifiMulti;
 WiFiUDP ntpUDP;
 // TODO timezone
-NTPClient timeClient(ntpUDP, "uk.pool.ntp.org", 0, 1000);
+NTPClient timeClient(ntpUDP, "uk.pool.ntp.org", 0, 60000);
 
 TFT_eSPI tft = TFT_eSPI();
 
