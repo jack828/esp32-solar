@@ -48,9 +48,11 @@ void setup() {
   initNtp();
 }
 
+int count = 0;
+int lastUpdate = 0;
 void loop() {
 
-  // Set "cursor" at top left corner of display (0,0) and select font 4
+  // Set "cursor" at top left corner of display (0, 0) and select font 4
   tft.setCursor(0, 0, 4);
 
   // Set the font colour to be white with a black background
@@ -73,6 +75,12 @@ void loop() {
   tft.print("Epoch: ");
   tft.println(timeClient.getEpochTime());
 
+  tft.print("count: ");
+  tft.println(count++);
+
+  tft.print("FPS: ");
+  tft.println((1 * 1000) / (millis() - lastUpdate));
+  lastUpdate = millis();
   /* delay(1000); */
 }
 
