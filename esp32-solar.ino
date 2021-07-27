@@ -25,7 +25,7 @@ int lastUpdate = 0;
 void loop() {
 
   // Set "cursor" at top left corner of display (0, 0) and select font 4
-  tft.setCursor(0, 0, 4);
+  tft.setCursor(0, 0, 2);
 
   // Set the font colour to be white with a black background
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
