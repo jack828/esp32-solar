@@ -16,35 +16,7 @@ void setup() {
   Serial.begin(115200);
 
   initTft();
-
-  WiFi.mode(WIFI_STA);
-  wifiMulti.addAP(WIFI_SSID_1, WIFI_PSK_1);
-  wifiMulti.addAP(WIFI_SSID_2, WIFI_PSK_2);
-  wifiMulti.addAP(WIFI_SSID_3, WIFI_PSK_3);
-
-  Serial.print(F("[ WIFI ] Connecting"));
-  int retryCount = 0;
-  while (wifiMulti.run() != WL_CONNECTED) {
-    Serial.print(F("."));
-    delay(250);
-    Serial.print(F("."));
-    delay(250);
-    Serial.print(F("."));
-    delay(250);
-    Serial.print(F("."));
-    delay(250);
-    if (retryCount++ > 20) {
-      Serial.println(F("\n[ WIFI ] ERROR: Could not connect to wifi, rebooting..."));
-      Serial.flush();
-      ESP.restart();
-    }
-  }
-  Serial.print(F("\n[ WIFI ] connected, SSID: "));
-  Serial.print(WiFi.SSID());
-  Serial.print(F(", IP:"));
-  Serial.println(WiFi.localIP());
-  Serial.println();
-
+  initWifi();
   initNtp();
 }
 
@@ -89,6 +61,36 @@ void initTft() {
 
   tft.setRotation(3);
   tft.fillScreen(TFT_BLACK);
+}
+
+void initWifi() {
+  WiFi.mode(WIFI_STA);
+  wifiMulti.addAP(WIFI_SSID_1, WIFI_PSK_1);
+  wifiMulti.addAP(WIFI_SSID_2, WIFI_PSK_2);
+  wifiMulti.addAP(WIFI_SSID_3, WIFI_PSK_3);
+
+  Serial.print(F("[ WIFI ] Connecting"));
+  int retryCount = 0;
+  while (wifiMulti.run() != WL_CONNECTED) {
+    Serial.print(F("."));
+    delay(250);
+    Serial.print(F("."));
+    delay(250);
+    Serial.print(F("."));
+    delay(250);
+    Serial.print(F("."));
+    delay(250);
+    if (retryCount++ > 20) {
+      Serial.println(F("\n[ WIFI ] ERROR: Could not connect to wifi, rebooting..."));
+      Serial.flush();
+      ESP.restart();
+    }
+  }
+  Serial.print(F("\n[ WIFI ] connected, SSID: "));
+  Serial.print(WiFi.SSID());
+  Serial.print(F(", IP:"));
+  Serial.println(WiFi.localIP());
+  Serial.println();
 }
 
 void initNtp() {
