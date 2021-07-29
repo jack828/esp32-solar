@@ -4,6 +4,8 @@
 #include <WiFiMulti.h>
 #include <WiFiUdp.h>
 #include <NTPClient.h>
+#include "planets.h"
+#include <math.h>
 
 WiFiMulti wifiMulti;
 WiFiUDP ntpUDP;
@@ -11,6 +13,11 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "uk.pool.ntp.org", 0, 60000);
 
 TFT_eSPI tft = TFT_eSPI();
+
+#define SUN_X 240
+#define SUN_Y 160
+#define SUN_R 10
+#define HEIGHT 320
 
 void setup() {
   Serial.begin(115200);
@@ -31,17 +38,8 @@ void loop() {
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
   // We can now plot text on screen using the "print" class
-  tft.println("Initialised default\n");
   tft.print("IP: ");
   tft.println(WiFi.localIP());
-
-  /* tft.setTextColor(TFT_RED, TFT_BLACK); */
-  /* tft.println("Red text"); */
-  /* tft.setTextColor(TFT_GREEN, TFT_BLACK); */
-  /* tft.println("Green text"); */
-  /* tft.setTextColor(TFT_BLUE, TFT_BLACK); */
-  /* tft.println("Blue text"); */
-
   tft.print("Time: ");
   tft.println(timeClient.getFormattedTime());
   tft.print("Epoch: ");
@@ -53,6 +51,47 @@ void loop() {
   tft.print("FPS: ");
   tft.println((1 * 1000) / (millis() - lastUpdate));
   lastUpdate = millis();
+  tft.print("Free heap: ");
+  tft.println(ESP.getFreeHeap());
+
+  /* DRAW PLANETS */
+
+  tft.fillCircle(SUN_X, SUN_Y, SUN_R, TFT_YELLOW);
+  tft.drawPixel(SUN_X, SUN_Y, TFT_BLACK);
+
+  Position* planets = coordinates(2021, 7, 21, 23, 22);
+  for (int planetIndex = 0; planetIndex < NUM_PLANETS; planetIndex++) {
+    Position planet = planets[planetIndex];
+      /* print(planetIndex, planet) */
+      // Radius of planet's orbit
+      int r = 16 * (planetIndex + 1) + 2;
+      //  display.set_pen(40, 40, 40) // black?
+      /* circle(SUN_X, SUN_Y, r); */
+      tft.drawCircle(SUN_X, SUN_Y, r, TFT_WHITE);
+      double theta = atan2(planet.xeclip, planet.yeclip);
+      // calculate position
+      double planetX = r * sin(theta);
+      double planetY = r * cos(theta);
+      /* print(theta, planetX, planetY); */
+      // adjust relative to CENTRE
+      planetX = planetX + SUN_X;
+      /* planetY =  (planetY + SUN_Y); */
+      planetY = HEIGHT - (planetY + SUN_Y);
+      tft.fillCircle((int)planetX, (int)planetY, 5, TFT_BLUE);
+      // Draw?
+     /* for ar in range(0, len(planetsLib.planetConfigs[planetIndex]), 5):
+          planetConfig = planetsLib.planetConfigs[planetIndex]
+          print(planet[3], planetConfig)
+          // -50 might be because a byte array can't contain
+          // negative numbers? But why 50?
+          x = planetConfig[ar] - 50 + planetX
+          y = planetConfig[ar + 1] - 50 + planetY
+          if x >= 0 and y >= 0:
+              redValue = planetConfig[ar + 2]
+              greenValue = planetConfig[ar + 3]
+              blueValue = planetConfig[ar + 4]*/
+  }
+  free(planets);
   /* delay(1000); */
 }
 
