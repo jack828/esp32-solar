@@ -25,6 +25,8 @@ void setup() {
   initTft();
   initWifi();
   initNtp();
+
+  tft.fillScreen(TFT_BLACK);
 }
 
 int count = 0;
@@ -103,13 +105,18 @@ void initTft() {
 }
 
 void initWifi() {
+  tft.setCursor(0, 0, 2);
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
+  Serial.print(F("[ WIFI ] Connecting..."));
+  tft.print(F("[ WIFI ] Connecting..."));
+
   WiFi.mode(WIFI_STA);
   wifiMulti.addAP(WIFI_SSID_1, WIFI_PSK_1);
   wifiMulti.addAP(WIFI_SSID_2, WIFI_PSK_2);
   wifiMulti.addAP(WIFI_SSID_3, WIFI_PSK_3);
 
-  Serial.print(F("[ WIFI ] Connecting"));
   int retryCount = 0;
+  // TODO this loop seems to never run...
   while (wifiMulti.run() != WL_CONNECTED) {
     Serial.print(F("."));
     delay(250);
@@ -125,6 +132,7 @@ void initWifi() {
       ESP.restart();
     }
   }
+  tft.println(F("done!"));
   Serial.print(F("\n[ WIFI ] connected, SSID: "));
   Serial.print(WiFi.SSID());
   Serial.print(F(", IP:"));
@@ -133,6 +141,8 @@ void initWifi() {
 }
 
 void initNtp() {
+  Serial.print(F("[ NTP ] Obtaining time..."));
+  tft.print(F("[ NTP ] Obtaining time..."));
   timeClient.begin();
   while (!timeClient.update()) {
     timeClient.forceUpdate();
