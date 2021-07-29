@@ -42,7 +42,7 @@ Position *coordinates(double year, double month, double day, double hour,
   double x = cos(e_capt) - e;
   double y = sin(e_capt) * sqrt(1 - e * e);
 
-  double r = sqrt(x * x + y * y);
+  double r = hypot(x, y);
 
   double v = atan2(y, x);
   v = toDegrees(v);
@@ -241,7 +241,7 @@ Position from_sun(double m, double e, double a, double n, double w, double i) {
   double x = a * (cos(e_capt) - e);
   double y = a * (sqrt(1 - e * e)) * sin(e_capt);
 
-  double r = sqrt(x * x + y * y);
+  double r = hypot(x, y);
   double v = atan2(y, x);
   v = normalize(toDegrees(v));
 
