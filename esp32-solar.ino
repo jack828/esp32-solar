@@ -63,7 +63,7 @@ void loop() {
   tft.fillCircle(SUN_X, SUN_Y, SUN_R, TFT_YELLOW);
   tft.drawPixel(SUN_X, SUN_Y, TFT_BLACK);
 
-  Position* planets = coordinates(2021, 7, 21, 23, 22);
+  Position* planets = coordinates(2025, 12, 13, 00, 01);
   for (int planetIndex = 0; planetIndex < NUM_PLANETS; planetIndex++) {
     Position planet = planets[planetIndex];
       /* print(planetIndex, planet) */
