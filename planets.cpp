@@ -2,16 +2,19 @@
 #include <malloc.h>
 #include <math.h>
 
+#define RADIANS_TO_DEGREES 0.017453292519943295
+#define DEGREES_TO_RADIANS 57.29577951308232
+
 double normalize(double degrees) {
   return degrees - floor(degrees / 360.0) * 360.0;
 }
 
 double toRadians(double degrees) {
-  return degrees * 57.2957795; // TODO DEGREES_PER_RADIAN
+  return degrees / DEGREES_TO_RADIANS;
 }
 
 double toDegrees(double radians) {
-  return 57.2957795 / radians; // TODO DEGREES_PER_RADIAN
+  return radians / RADIANS_TO_DEGREES;
 }
 
 Planet::Planet() {}
