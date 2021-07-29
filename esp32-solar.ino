@@ -16,8 +16,10 @@ TFT_eSPI tft = TFT_eSPI();
 
 #define SUN_X 240
 #define SUN_Y 160
-#define SUN_R 10
+#define SUN_R 8
 #define HEIGHT 320
+
+int colours[NUM_PLANETS] = {TFT_SILVER, TFT_BROWN, TFT_GREEN, TFT_RED, TFT_ORANGE, TFT_YELLOW, TFT_SKYBLUE, TFT_NAVY};
 
 void setup() {
   Serial.begin(115200);
@@ -79,7 +81,7 @@ void loop() {
       planetX = planetX + SUN_X;
       /* planetY =  (planetY + SUN_Y); */
       planetY = HEIGHT - (planetY + SUN_Y);
-      tft.fillCircle((int)planetX, (int)planetY, 5, TFT_BLUE);
+      tft.fillCircle((int)planetX, (int)planetY, 5, colours[planetIndex]);
       // Draw?
      /* for ar in range(0, len(planetsLib.planetConfigs[planetIndex]), 5):
           planetConfig = planetsLib.planetConfigs[planetIndex]
