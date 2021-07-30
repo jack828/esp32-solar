@@ -59,7 +59,7 @@ void loop() {
   tft.print("Free heap: ");
   tft.println(ESP.getFreeHeap());
 
-  /* DRAW PLANETS */
+  /* GET PLANET POSITIONS */
 
   tft.fillCircle(SUN_X, SUN_Y, SUN_R, TFT_YELLOW);
   tft.drawPixel(SUN_X, SUN_Y, TFT_BLACK);
@@ -70,6 +70,7 @@ void loop() {
   Position* planets = coordinates(timeTm->tm_year + 1900, timeTm->tm_mon + 1,
                                   timeTm->tm_mday, timeTm->tm_hour, timeTm->tm_min);
 
+  /* DRAW PLANETS */
   for (int planetIndex = 0; planetIndex < NUM_PLANETS; planetIndex++) {
     Position planet = planets[planetIndex];
       /* print(planetIndex, planet) */
