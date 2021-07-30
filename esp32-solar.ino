@@ -6,6 +6,7 @@
 #include <NTPClient.h>
 #include "planets.h"
 #include <math.h>
+#include <time.h>
 
 WiFiMulti wifiMulti;
 WiFiUDP ntpUDP;
@@ -63,7 +64,12 @@ void loop() {
   tft.fillCircle(SUN_X, SUN_Y, SUN_R, TFT_YELLOW);
   tft.drawPixel(SUN_X, SUN_Y, TFT_BLACK);
 
-  Position* planets = coordinates(2025, 12, 13, 00, 01);
+  time_t time = timeClient.getEpochTime() + (count * 24 * 60 * 60);
+  const tm* timeTm = localtime(&time);
+  tft.println(asctime(timeTm));
+  Position* planets = coordinates(timeTm->tm_year + 1900, timeTm->tm_mon + 1,
+                                  timeTm->tm_mday, timeTm->tm_hour, timeTm->tm_min);
+
   for (int planetIndex = 0; planetIndex < NUM_PLANETS; planetIndex++) {
     Position planet = planets[planetIndex];
       /* print(planetIndex, planet) */
