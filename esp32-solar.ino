@@ -17,7 +17,7 @@ TFT_eSPI tft = TFT_eSPI();
 
 #define SUN_X 240
 #define SUN_Y 160
-#define SUN_R 8
+#define SUN_R 7
 #define HEIGHT 320
 
 int colours[NUM_PLANETS] = {TFT_SILVER, TFT_BROWN, TFT_GREEN, TFT_RED, TFT_ORANGE, TFT_YELLOW, TFT_SKYBLUE, TFT_NAVY};
@@ -62,7 +62,7 @@ void loop() {
   /* GET PLANET POSITIONS */
 
   tft.fillCircle(SUN_X, SUN_Y, SUN_R, TFT_YELLOW);
-  tft.drawPixel(SUN_X, SUN_Y, TFT_BLACK);
+  /* tft.drawPixel(SUN_X, SUN_Y, TFT_BLACK); */
 
   time_t time = timeClient.getEpochTime() + (count * 24 * 60 * 60);
   const tm* timeTm = localtime(&time);
@@ -73,17 +73,15 @@ void loop() {
   /* DRAW PLANETS */
   for (int planetIndex = 0; planetIndex < NUM_PLANETS; planetIndex++) {
     Position planet = planets[planetIndex];
-      /* print(planetIndex, planet) */
       // Radius of planet's orbit
-      int r = 16 * (planetIndex + 1) + 2;
-      //  display.set_pen(40, 40, 40) // black?
-      /* circle(SUN_X, SUN_Y, r); */
+      int r = (SUN_R * 2.5) * (planetIndex + 1) + 2;
+
       tft.drawCircle(SUN_X, SUN_Y, r, TFT_WHITE);
       double theta = atan2(planet.xeclip, planet.yeclip);
-      // calculate position
+      // calculate angular position
       double planetX = r * sin(theta);
       double planetY = r * cos(theta);
-      /* print(theta, planetX, planetY); */
+
       // adjust relative to CENTRE
       planetX = planetX + SUN_X;
       /* planetY =  (planetY + SUN_Y); */
