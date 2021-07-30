@@ -87,6 +87,9 @@ void loop() {
       planetX = planetX + SUN_X;
       /* planetY =  (planetY + SUN_Y); */
       planetY = HEIGHT - (planetY + SUN_Y);
+      // Draw slightly larger circle to remove previous pixel
+      tft.fillCircle((int)planetX, (int)planetY, 7, TFT_BLACK);
+      // Draw planet
       tft.fillCircle((int)planetX, (int)planetY, 5, colours[planetIndex]);
       // Draw?
      /* for ar in range(0, len(planetsLib.planetConfigs[planetIndex]), 5):
