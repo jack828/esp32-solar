@@ -35,29 +35,28 @@ void setup() {
 int count = 0;
 int lastUpdate = 0;
 void loop() {
-
-  // Set "cursor" at top left corner of display (0, 0) and select font 4
   tft.setCursor(0, 0, 2);
 
-  // Set the font colour to be white with a black background
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
   // We can now plot text on screen using the "print" class
   tft.print("IP: ");
-  tft.println(WiFi.localIP());
-  tft.print("Time: ");
-  tft.println(timeClient.getFormattedTime());
-  tft.print("Epoch: ");
+  tft.print(WiFi.localIP());
+  tft.print(" Time: ");
+  tft.print(timeClient.getFormattedTime());
+  tft.print(" Epoch: ");
   tft.println(timeClient.getEpochTime());
 
   tft.print("count: ");
-  tft.println(count++);
+  tft.print(count++);
 
-  tft.print("FPS: ");
+  tft.print(" FPS: ");
   tft.println((1 * 1000) / (millis() - lastUpdate));
   lastUpdate = millis();
+  tft.setCursor(0, tft.height() - 16, 2);
   tft.print("Free heap: ");
-  tft.println(ESP.getFreeHeap());
+  tft.print(ESP.getFreeHeap());
+  tft.print(' ');
 
   /* GET PLANET POSITIONS */
 
