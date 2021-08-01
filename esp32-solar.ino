@@ -40,21 +40,21 @@ void loop() {
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
   // We can now plot text on screen using the "print" class
-  tft.print("IP: ");
+  tft.print(F("IP: "));
   tft.print(WiFi.localIP());
-  tft.print(" Time: ");
+  tft.print(F(" Time: "));
   tft.print(timeClient.getFormattedTime());
-  tft.print(" Epoch: ");
+  tft.print(F(" Epoch: "));
   tft.println(timeClient.getEpochTime());
 
-  tft.print("count: ");
+  tft.print(F("count: "));
   tft.print(count++);
 
-  tft.print(" FPS: ");
+  tft.print(F(" FPS: "));
   tft.println((1 * 1000) / (millis() - lastUpdate));
   lastUpdate = millis();
   tft.setCursor(0, tft.height() - 16, 2);
-  tft.print("Free heap: ");
+  tft.print(F("Free heap: "));
   tft.print(ESP.getFreeHeap());
   tft.print(' ');
 
@@ -156,8 +156,8 @@ void initNtp() {
   while (!timeClient.update()) {
     timeClient.forceUpdate();
   }
-  Serial.print("[ NTP ] time: ");
+  Serial.print(F("[ NTP ] time: "));
   Serial.println(timeClient.getFormattedTime());
-  Serial.print("[ NTP ] epoch: ");
+  Serial.print(F("[ NTP ] epoch: "));
   Serial.println(timeClient.getEpochTime());
 }
