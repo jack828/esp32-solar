@@ -461,7 +461,7 @@ void DisplayUi::drawIndicator() {
       image = this->inactiveSymbol;
     }
 
-    this->tft->pushImage(x, y, 8, 8, (uint16_t *)image);
+    this->tft->pushImage(x, y, 8, 8, (uint8_t *)image);
   }
 }
 
