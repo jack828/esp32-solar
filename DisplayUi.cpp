@@ -33,9 +33,6 @@
 #include "DisplayUi.h"
 
 void LoadingDrawDefault(TFT_eSPI *tft, LoadingStage *stage, uint8_t progress) {
-  /*display->setTextAlignment(TEXT_ALIGN_CENTER);
-  display->setFont(ArialMT_Plain_10);*/
-  // tft->setCursor(0, 30, 2);
   tft->setTextDatum(MC_DATUM);
   tft->drawString(stage->process, tft->width() / 2, tft->height() / 3, 4);
   tft->setTextDatum(TL_DATUM);
