@@ -7,7 +7,7 @@
 #define TOUCH_REG_YL 0x06
 #define TOUCH_REG_YH 0x05
 
-int readTouchReg(int reg);
+int readTouchRegister(int reg);
 
 int getTouchPointX();
 
