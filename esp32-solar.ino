@@ -1,12 +1,12 @@
+#include "FT6236.h"
 #include "credentials.h"
 #include "definitions.h"
+#include "planets.h"
+#include <NTPClient.h>
 #include <SPI.h>
 #include <TFT_eSPI.h>
 #include <WiFiMulti.h>
 #include <WiFiUdp.h>
-#include <NTPClient.h>
-#include "planets.h"
-#include "FT6236.h"
 #include <math.h>
 #include <time.h>
 
@@ -23,7 +23,8 @@ TFT_eSPI_Button btn;
 #define SUN_R 7
 #define HEIGHT 320
 
-int colours[NUM_PLANETS] = {TFT_SILVER, TFT_BROWN, TFT_GREEN, TFT_RED, TFT_ORANGE, TFT_YELLOW, TFT_SKYBLUE, TFT_NAVY};
+int colours[NUM_PLANETS] = {TFT_SILVER, TFT_BROWN,  TFT_GREEN,   TFT_RED,
+                            TFT_ORANGE, TFT_YELLOW, TFT_SKYBLUE, TFT_NAVY};
 
 // Function definitions for LSP
 void initTft(void);
@@ -62,8 +63,10 @@ void setup() {
   tft.fillScreen(TFT_BLACK);
 
   // Sun is static & screen buffer does not reset each frame
-  tft.pushImage(SUN_X - (SUN_WIDTH / 2), SUN_Y - (SUN_HEIGHT / 2), SUN_WIDTH, SUN_HEIGHT, (uint8_t *)sunImage);
-  btn.initButtonUL(&tft, 20, 100, 50, 30, TFT_WHITE, TFT_WHITE, TFT_BLACK, "PLAY", 1);
+  tft.pushImage(SUN_X - (SUN_WIDTH / 2), SUN_Y - (SUN_HEIGHT / 2), SUN_WIDTH,
+                SUN_HEIGHT, (uint8_t *)sunImage);
+  btn.initButtonUL(&tft, 20, 100, 50, 30, TFT_WHITE, TFT_WHITE, TFT_BLACK,
+                   "PLAY", 1);
 
   btn.drawButton();
 }
@@ -84,12 +87,13 @@ void loop() {
   tft.print(pos[1]);
   tft.print(" Pressed: ");
 
-  if (pos[0] != -1 && pos[1] != -1 && btn.contains(tft.width() - pos[0], pos[1])) {
-    btn.press(true);  // tell the button it is pressed
+  if (pos[0] != -1 && pos[1] != -1 &&
+      btn.contains(tft.width() - pos[0], pos[1])) {
+    btn.press(true); // tell the button it is pressed
   } else {
-    btn.press(false);  // tell the button it is NOT pressed
+    btn.press(false); // tell the button it is NOT pressed
   }
-  tft.print(btn.contains(tft.width() - pos[0], pos[1]) ? 'Y': 'N');
+  tft.print(btn.contains(tft.width() - pos[0], pos[1]) ? 'Y' : 'N');
   tft.println("    ");
 
   if (btn.justReleased()) {
@@ -125,43 +129,44 @@ void loop() {
   /* GET PLANET POSITIONS */
 
   time_t time = timeClient.getEpochTime() + (count * 24 * 60 * 60);
-  const tm* timeTm = localtime(&time);
+  const tm *timeTm = localtime(&time);
   tft.println(asctime(timeTm));
-  Position* planets = coordinates(timeTm->tm_year + 1900, timeTm->tm_mon + 1,
-                                  timeTm->tm_mday, timeTm->tm_hour, timeTm->tm_min);
+  Position *planets =
+      coordinates(timeTm->tm_year + 1900, timeTm->tm_mon + 1, timeTm->tm_mday,
+                  timeTm->tm_hour, timeTm->tm_min);
 
   /* DRAW PLANETS */
   for (int planetIndex = 0; planetIndex < NUM_PLANETS; planetIndex++) {
     Position planet = planets[planetIndex];
-      // Radius of planet's orbit
-      int r = (SUN_R * 2.5) * (planetIndex + 1) + 2;
+    // Radius of planet's orbit
+    int r = (SUN_R * 2.5) * (planetIndex + 1) + 2;
 
-      tft.drawCircle(SUN_X, SUN_Y, r, TFT_WHITE);
-      double theta = atan2(planet.xeclip, planet.yeclip);
-      // calculate angular position
-      double planetX = r * sin(theta);
-      double planetY = r * cos(theta);
+    tft.drawCircle(SUN_X, SUN_Y, r, TFT_WHITE);
+    double theta = atan2(planet.xeclip, planet.yeclip);
+    // calculate angular position
+    double planetX = r * sin(theta);
+    double planetY = r * cos(theta);
 
-      // adjust relative to CENTRE
-      planetX = planetX + SUN_X;
-      /* planetY =  (planetY + SUN_Y); */
-      planetY = HEIGHT - (planetY + SUN_Y);
-      // Draw slightly larger circle to remove previous pixel
-      tft.fillCircle((int)planetX, (int)planetY, 7, TFT_BLACK);
-      // Draw planet
-      tft.fillCircle((int)planetX, (int)planetY, 5, colours[planetIndex]);
-      // Draw?
-     /* for ar in range(0, len(planetsLib.planetConfigs[planetIndex]), 5):
-          planetConfig = planetsLib.planetConfigs[planetIndex]
-          print(planet[3], planetConfig)
-          // -50 might be because a byte array can't contain
-          // negative numbers? But why 50?
-          x = planetConfig[ar] - 50 + planetX
-          y = planetConfig[ar + 1] - 50 + planetY
-          if x >= 0 and y >= 0:
-              redValue = planetConfig[ar + 2]
-              greenValue = planetConfig[ar + 3]
-              blueValue = planetConfig[ar + 4]*/
+    // adjust relative to CENTRE
+    planetX = planetX + SUN_X;
+    /* planetY =  (planetY + SUN_Y); */
+    planetY = HEIGHT - (planetY + SUN_Y);
+    // Draw slightly larger circle to remove previous pixel
+    tft.fillCircle((int)planetX, (int)planetY, 7, TFT_BLACK);
+    // Draw planet
+    tft.fillCircle((int)planetX, (int)planetY, 5, colours[planetIndex]);
+    // Draw?
+    /* for ar in range(0, len(planetsLib.planetConfigs[planetIndex]), 5):
+         planetConfig = planetsLib.planetConfigs[planetIndex]
+         print(planet[3], planetConfig)
+         // -50 might be because a byte array can't contain
+         // negative numbers? But why 50?
+         x = planetConfig[ar] - 50 + planetX
+         y = planetConfig[ar + 1] - 50 + planetY
+         if x >= 0 and y >= 0:
+             redValue = planetConfig[ar + 2]
+             greenValue = planetConfig[ar + 3]
+             blueValue = planetConfig[ar + 4]*/
   }
   free(planets);
   if (!paused) count++;
@@ -215,7 +220,8 @@ void initWifi() {
     Serial.print(F("."));
     delay(250);
     if (retryCount++ > 20) {
-      Serial.println(F("\n[ WIFI ] ERROR: Could not connect to wifi, rebooting..."));
+      Serial.println(
+          F("\n[ WIFI ] ERROR: Could not connect to wifi, rebooting..."));
       Serial.flush();
       ESP.restart();
     }
