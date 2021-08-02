@@ -382,7 +382,7 @@ void DisplayUi::drawIndicator() {
 
   // Only draw if the indicator is invisible
   // for both frames or
-  // the indiactor is shown and we are IN_TRANSITION
+  // the indicator is shown and we are IN_TRANSITION
   if (this->indicatorDrawState == 3 ||
       (!this->state.isIndicatorDrawn &&
        this->state.frameState != IN_TRANSITION)) {
@@ -392,14 +392,14 @@ void DisplayUi::drawIndicator() {
   uint8_t posOfHighlightFrame = 0;
   float indicatorFadeProgress = 0;
 
-  // if the indicator needs to be slided in we want to
+  // if the indicator needs to slide in we want to
   // highlight the next frame in the transition
   uint8_t frameToHighlight = this->indicatorDrawState == 1
                                  ? this->getNextFrameNumber()
                                  : this->state.currentFrame;
 
   // Calculate the frame that needs to be highlighted
-  // based on the Direction the indiactor is drawn
+  // based on the Direction the indicator is drawn
   switch (this->indicatorDirection) {
   case LEFT_RIGHT:
     posOfHighlightFrame = frameToHighlight;
