@@ -159,7 +159,7 @@ void DisplayUi::setLoadingDrawFunction(
 
 void DisplayUi::runLoadingProcess(LoadingStage *stages, uint8_t stagesCount) {
   uint8_t progress = 0;
-  uint8_t increment = 100 / stagesCount;
+  uint8_t increment = 100 / (stagesCount - 1);
 
   for (uint8_t i = 0; i < stagesCount; i++) {
     // tft->fillScreen(TFT_BLACK);
@@ -174,7 +174,6 @@ void DisplayUi::runLoadingProcess(LoadingStage *stages, uint8_t stagesCount) {
 
   tft->fillScreen(TFT_BLACK);
   this->loadingDrawFunction(this->tft, &stages[stagesCount - 1], progress);
-  // tft->display();
 
   delay(150);
 }
