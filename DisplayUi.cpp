@@ -44,7 +44,7 @@ void LoadingDrawDefault(TFT_eSPI *tft, LoadingStage *stage, uint8_t progress) {
   // Progress bar outline
   tft->drawRoundRect(x, y, w, h, 4, TFT_WHITE);
   // Filled portion
-  tft->fillRoundRect(x, y, (w / 100) * progress, h, 4, TFT_WHITE);
+  tft->fillRoundRect(x, y, ((w / 100.0) * progress) + 2, h, 4, TFT_WHITE);
 };
 
 DisplayUi::DisplayUi(TFT_eSPI *tft) {
