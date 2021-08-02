@@ -312,6 +312,8 @@ void DisplayUi::drawFrame() {
       x1 = x - this->tft->width();
       y1 = 0;
       break;
+    // case CRISS_CROSS
+    // case CLAP_HANDS
     case SLIDE_UP:
       x = 0;
       y = -this->tft->height() * progress;
