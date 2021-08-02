@@ -170,7 +170,6 @@ void DisplayUi::runLoadingProcess(LoadingStage *stages, uint8_t stagesCount) {
   }
 
   tft->fillScreen(TFT_BLACK);
-  this->loadingDrawFunction(this->tft, &stages[stagesCount - 1], progress);
 
   delay(150);
 }
