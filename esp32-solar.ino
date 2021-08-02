@@ -1,10 +1,12 @@
 #include "credentials.h"
+#include "definitions.h"
 #include <SPI.h>
 #include <TFT_eSPI.h>
 #include <WiFiMulti.h>
 #include <WiFiUdp.h>
 #include <NTPClient.h>
 #include "planets.h"
+#include "FT6236.h"
 #include <math.h>
 #include <time.h>
 
@@ -14,6 +16,7 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "uk.pool.ntp.org", 0, 60000);
 
 TFT_eSPI tft = TFT_eSPI();
+TFT_eSPI_Button btn;
 
 #define SUN_X 240
 #define SUN_Y 160
@@ -24,6 +27,7 @@ int colours[NUM_PLANETS] = {TFT_SILVER, TFT_BROWN, TFT_GREEN, TFT_RED, TFT_ORANG
 
 // Function definitions for LSP
 void initTft(void);
+void initTouch(void);
 void initWifi(void);
 void initNtp(void);
 
@@ -51,6 +55,7 @@ void setup() {
   Serial.begin(115200);
 
   initTft();
+  initTouch();
   initWifi();
   initNtp();
 
@@ -58,13 +63,44 @@ void setup() {
 
   // Sun is static & screen buffer does not reset each frame
   tft.pushImage(SUN_X - (SUN_WIDTH / 2), SUN_Y - (SUN_HEIGHT / 2), SUN_WIDTH, SUN_HEIGHT, (uint8_t *)sunImage);
+  btn.initButtonUL(&tft, 20, 100, 50, 30, TFT_WHITE, TFT_WHITE, TFT_BLACK, "PLAY", 1);
+
+  btn.drawButton();
 }
 
 int count = 0;
 int lastUpdate = 0;
+bool paused = true;
 void loop() {
-  tft.setCursor(0, 0, 2);
+  tft.setCursor(0, 30, 2);
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
+  lastUpdate = millis();
+  int pos[2] = {0, 0};
+  ft6236_pos(pos);
+  tft.print("X: ");
+  tft.print(pos[0]);
+  tft.print(" Y: ");
+  tft.print(pos[1]);
+  tft.print(" Pressed: ");
+
+  if (pos[0] != -1 && pos[1] != -1 && btn.contains(tft.width() - pos[0], pos[1])) {
+    btn.press(true);  // tell the button it is pressed
+  } else {
+    btn.press(false);  // tell the button it is NOT pressed
+  }
+  tft.print(btn.contains(tft.width() - pos[0], pos[1]) ? 'Y': 'N');
+  tft.println("    ");
+
+  if (btn.justReleased()) {
+    btn.drawButton(false, paused ? "PLAY" : "PAUSE");
+  } else if (btn.justPressed()) {
+    paused = !paused;
+    btn.drawButton(true, paused ? "PLAY" : "PAUSE");
+    Serial.println("PRESSED BOI");
+  }
+
+  tft.setCursor(0, 0, 2);
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
   // We can now plot text on screen using the "print" class
@@ -76,7 +112,7 @@ void loop() {
   tft.println(timeClient.getEpochTime());
 
   tft.print(F("count: "));
-  tft.print(count++);
+  tft.print(count);
 
   tft.print(F(" FPS: "));
   tft.println((1 * 1000) / (millis() - lastUpdate));
@@ -128,6 +164,7 @@ void loop() {
               blueValue = planetConfig[ar + 4]*/
   }
   free(planets);
+  if (!paused) count++;
   /* delay(1000); */
 }
 
@@ -136,6 +173,23 @@ void initTft() {
 
   tft.setRotation(3);
   tft.fillScreen(TFT_BLACK);
+}
+
+void initTouch() {
+  byte error;
+  Wire.begin(I2C_SDA, I2C_SCL);
+  Wire.beginTransmission(TOUCH_I2C_ADD);
+  error = Wire.endTransmission();
+  if (error == 0) {
+    Serial.print("I2C device found at address 0x");
+    Serial.print(TOUCH_I2C_ADD, HEX);
+    Serial.println("  !");
+  } else {
+    Serial.print("Unknown error at address 0x");
+    Serial.println(TOUCH_I2C_ADD, HEX);
+    Serial.print(" - ");
+    Serial.println(error);
+  }
 }
 
 void initWifi() {
