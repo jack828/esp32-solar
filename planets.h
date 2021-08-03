@@ -1,17 +1,9 @@
 #ifndef __PLANETS_H__
 #define __PLANETS_H__
 
+#include <time.h>
+
 #define NUM_PLANETS 8
-
-class Planet {
-private:
-  double x;
-  double y;
-
-public:
-  Planet();
-  void calculatePosition();
-};
 
 struct Position {
   double xeclip;

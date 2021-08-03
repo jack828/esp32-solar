@@ -13,8 +13,6 @@ double toRadians(double degrees) { return degrees / DEGREES_TO_RADIANS; }
 
 double toDegrees(double radians) { return radians / RADIANS_TO_DEGREES; }
 
-Planet::Planet() {}
-
 // micropython math uses radians :tada:
 Position *coordinates(double year, double month, double day, double hour,
                       double minute) {
