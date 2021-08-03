@@ -41,7 +41,13 @@
 
 #include <TFT_eSPI.h>
 
-enum AnimationDirection { SLIDE_UP, SLIDE_DOWN, SLIDE_LEFT, SLIDE_RIGHT };
+enum AnimationDirection {
+  SLIDE_UP,
+  SLIDE_DOWN,
+  SLIDE_LEFT,
+  SLIDE_RIGHT,
+  INSTANT
+};
 
 enum IndicatorPosition { TOP, RIGHT, BOTTOM, LEFT };
 
