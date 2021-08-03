@@ -9,13 +9,9 @@ double normalize(double degrees) {
   return degrees - floor(degrees / 360.0) * 360.0;
 }
 
-double toRadians(double degrees) {
-  return degrees / DEGREES_TO_RADIANS;
-}
+double toRadians(double degrees) { return degrees / DEGREES_TO_RADIANS; }
 
-double toDegrees(double radians) {
-  return radians / RADIANS_TO_DEGREES;
-}
+double toDegrees(double radians) { return radians / RADIANS_TO_DEGREES; }
 
 Planet::Planet() {}
 
