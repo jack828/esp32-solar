@@ -57,6 +57,7 @@ void setup() {
 int count = 0;
 int lastUpdate = 0;
 bool paused = true;
+Position *planets;
 void loop() {
   tft.setCursor(0, 30, 2);
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
@@ -111,49 +112,55 @@ void loop() {
 
   /* GET PLANET POSITIONS */
 
-  time_t time = timeClient.getEpochTime() + (count * 24 * 60 * 60);
-  const tm *timeTm = localtime(&time);
-  tft.println(asctime(timeTm));
-  Position *planets =
-      coordinates(timeTm->tm_year + 1900, timeTm->tm_mon + 1, timeTm->tm_mday,
-                  timeTm->tm_hour, timeTm->tm_min);
+  // re-render in initial starting state OR if not paused
+  if (count == 0 || !paused) {
+    uint32_t start = millis();
+    time_t time = timeClient.getEpochTime() + (count++ * 24 * 60 * 60);
+    const tm *timeTm = localtime(&time);
+    tft.print(asctime(timeTm));
+    planets = coordinates(timeTm->tm_year + 1900, timeTm->tm_mon + 1,
+                          timeTm->tm_mday, timeTm->tm_hour, timeTm->tm_min);
+    tft.setCursor(0, 80, 2);
+    tft.print("  TTC: ");
+    tft.print(millis() - start);
 
-  /* DRAW PLANETS */
-  for (int planetIndex = 0; planetIndex < NUM_PLANETS; planetIndex++) {
-    Position planet = planets[planetIndex];
-    // Radius of planet's orbit
-    int r = (SUN_R * 2.5) * (planetIndex + 1) + 2;
+    start = millis();
+    /* DRAW PLANETS */
+    for (int planetIndex = 0; planetIndex < NUM_PLANETS; planetIndex++) {
+      Position planet = planets[planetIndex];
+      // Radius of planet's orbit
+      int r = (SUN_R * 2.5) * (planetIndex + 1) + 2;
 
-    tft.drawCircle(SUN_X, SUN_Y, r, TFT_WHITE);
-    double theta = atan2(planet.xeclip, planet.yeclip);
-    // calculate angular position
-    double planetX = r * sin(theta);
-    double planetY = r * cos(theta);
+      tft.drawCircle(SUN_X, SUN_Y, r, TFT_WHITE);
+      double theta = atan2(planet.xeclip, planet.yeclip);
+      // calculate angular position
+      double planetX = r * sin(theta);
+      double planetY = r * cos(theta);
 
-    // adjust relative to CENTRE
-    planetX = planetX + SUN_X;
-    /* planetY =  (planetY + SUN_Y); */
-    planetY = HEIGHT - (planetY + SUN_Y);
-    // Draw slightly larger circle to remove previous pixel
-    tft.fillCircle((int)planetX, (int)planetY, 7, TFT_BLACK);
-    // Draw planet
-    tft.fillCircle((int)planetX, (int)planetY, 5, colours[planetIndex]);
-    // Draw?
-    /* for ar in range(0, len(planetsLib.planetConfigs[planetIndex]), 5):
-         planetConfig = planetsLib.planetConfigs[planetIndex]
-         print(planet[3], planetConfig)
-         // -50 might be because a byte array can't contain
-         // negative numbers? But why 50?
-         x = planetConfig[ar] - 50 + planetX
-         y = planetConfig[ar + 1] - 50 + planetY
-         if x >= 0 and y >= 0:
-             redValue = planetConfig[ar + 2]
-             greenValue = planetConfig[ar + 3]
-             blueValue = planetConfig[ar + 4]*/
+      // adjust relative to CENTRE
+      planetX = planetX + SUN_X;
+      /* planetY =  (planetY + SUN_Y); */
+      planetY = HEIGHT - (planetY + SUN_Y);
+      // Draw slightly larger circle to remove previous pixel
+      tft.fillCircle((int)planetX, (int)planetY, 7, TFT_BLACK);
+      // Draw planet
+      tft.fillCircle((int)planetX, (int)planetY, 5, colours[planetIndex]);
+      // Draw?
+      /* for ar in range(0, len(planetsLib.planetConfigs[planetIndex]), 5):
+           planetConfig = planetsLib.planetConfigs[planetIndex]
+           print(planet[3], planetConfig)
+           // -50 might be because a byte array can't contain
+           // negative numbers? But why 50?
+           x = planetConfig[ar] - 50 + planetX
+           y = planetConfig[ar + 1] - 50 + planetY
+           if x >= 0 and y >= 0:
+               redValue = planetConfig[ar + 2]
+               greenValue = planetConfig[ar + 3]
+               blueValue = planetConfig[ar + 4]*/
+    }
+    tft.print("  TTD: ");
+    tft.print(millis() - start);
   }
-  free(planets);
-  if (!paused) count++;
-  /* delay(1000); */
 }
 
 void initTft() {
