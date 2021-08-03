@@ -13,19 +13,19 @@ double toRadians(double degrees) { return degrees / DEGREES_TO_RADIANS; }
 
 double toDegrees(double radians) { return radians / RADIANS_TO_DEGREES; }
 
-// micropython math uses radians :tada:
-Position *coordinates(double year, double month, double day, double hour,
-                      double minute) {
-  // Return value
-  Position *ret = (Position *)malloc(NUM_PLANETS * sizeof(Position));
+void coordinates(Position *planets, const tm *time) {
   // SECTION 4.
-  // Compute day number by converting provided calendar date to Julian Day
-  // Number
+  // Compute day number by converting calendar date to Julian Day Number
+  // Years are indexed from 1900
+  // Months are indexed from 0
   double julianDayNumber =
-      ((367 * year - floor(7 * (year + floor((month + 9) / 12)) / 4)) +
-       floor(275 * month / 9) + (day + 1721013.5));
+      ((367 * (time->tm_year + 1900) -
+        floor(7 *
+              ((time->tm_year + 1900) + floor(((time->tm_mon + 1) + 9) / 12)) /
+              4)) +
+       floor(275 * (time->tm_mon + 1) / 9) + (time->tm_mday + 1721013.5));
   // Add the current time
-  julianDayNumber += (hour / 24.0 + minute / 1440.0);
+  julianDayNumber += (time->tm_hour / 24.0 + time->tm_min / 1440.0);
   // d = our day number
   double d = julianDayNumber - 2451543.5;
 
@@ -211,19 +211,18 @@ Position *coordinates(double year, double month, double day, double hour,
   uranusPosition.zeclip = uranusPosition.r * sin(uranusPosition.lat2);
 
   int planetIndex = 0;
-  ret[planetIndex++] = mercuryPosition;
-  ret[planetIndex++] = venusPosition;
+  planets[planetIndex++] = mercuryPosition;
+  planets[planetIndex++] = venusPosition;
   Position earthPosition;
   earthPosition.xeclip = earthX;
   earthPosition.yeclip = earthY;
   earthPosition.zeclip = earthZ;
-  ret[planetIndex++] = earthPosition;
-  ret[planetIndex++] = marsPosition;
-  ret[planetIndex++] = jupiterPosition;
-  ret[planetIndex++] = saturnPosition;
-  ret[planetIndex++] = uranusPosition;
-  ret[planetIndex] = neptunePosition;
-  return ret;
+  planets[planetIndex++] = earthPosition;
+  planets[planetIndex++] = marsPosition;
+  planets[planetIndex++] = jupiterPosition;
+  planets[planetIndex++] = saturnPosition;
+  planets[planetIndex++] = uranusPosition;
+  planets[planetIndex] = neptunePosition;
 }
 
 // TODO positional object + better args

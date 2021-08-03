@@ -20,7 +20,7 @@ double toRadians(double degrees);
 
 double toDegrees(double radians);
 
-Position *coordinates(double year, double month, double day, double hour, double minute);
+void coordinates(Position* planets, const tm *time);
 
 Position from_sun(double m, double e, double a, double n, double w, double i);
 #endif

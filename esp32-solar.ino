@@ -57,7 +57,8 @@ void setup() {
 int count = 0;
 int lastUpdate = 0;
 bool paused = true;
-Position *planets;
+Position *planets = (Position *)malloc(NUM_PLANETS * sizeof(Position));
+
 void loop() {
   tft.setCursor(0, 30, 2);
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
@@ -118,8 +119,7 @@ void loop() {
     time_t time = timeClient.getEpochTime() + (count++ * 24 * 60 * 60);
     const tm *timeTm = localtime(&time);
     tft.print(asctime(timeTm));
-    planets = coordinates(timeTm->tm_year + 1900, timeTm->tm_mon + 1,
-                          timeTm->tm_mday, timeTm->tm_hour, timeTm->tm_min);
+    coordinates(planets, timeTm);
     tft.setCursor(0, 80, 2);
     tft.print("  TTC: ");
     tft.print(millis() - start);
