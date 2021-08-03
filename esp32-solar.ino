@@ -48,7 +48,7 @@ void setup() {
   // Sun is static & screen buffer does not reset each frame
   tft.pushImage(SUN_X - (SUN_WIDTH / 2), SUN_Y - (SUN_HEIGHT / 2), SUN_WIDTH,
                 SUN_HEIGHT, (uint8_t *)sunImage);
-  btn.initButtonUL(&tft, 20, 100, 50, 30, TFT_WHITE, TFT_WHITE, TFT_BLACK,
+  btn.initButtonUL(&tft, 20, 100, 50, 50, TFT_WHITE, TFT_WHITE, TFT_BLACK,
                    "PLAY", 1);
 
   btn.drawButton();
