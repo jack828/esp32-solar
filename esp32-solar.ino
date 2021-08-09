@@ -198,23 +198,11 @@ void initWifi() {
   wifiMulti.addAP(WIFI_SSID_2, WIFI_PSK_2);
   wifiMulti.addAP(WIFI_SSID_3, WIFI_PSK_3);
 
-  int retryCount = 0;
-  // TODO this loop seems to never run...
   while (wifiMulti.run() != WL_CONNECTED) {
-    Serial.print(F("."));
-    delay(250);
-    Serial.print(F("."));
-    delay(250);
-    Serial.print(F("."));
-    delay(250);
-    Serial.print(F("."));
-    delay(250);
-    if (retryCount++ > 20) {
-      Serial.println(
-          F("\n[ WIFI ] ERROR: Could not connect to wifi, rebooting..."));
-      Serial.flush();
-      ESP.restart();
-    }
+    Serial.println(
+        F("\n[ WIFI ] ERROR: Could not connect to wifi, rebooting..."));
+    Serial.flush();
+    ESP.restart();
   }
   tft.println(F("done!"));
   Serial.print(F("\n[ WIFI ] connected, SSID: "));
