@@ -33,8 +33,6 @@ void initTouch(void);
 void initWifi(void);
 void initNtp(void);
 
-
-
 void setup() {
   Serial.begin(115200);
 
@@ -46,8 +44,10 @@ void setup() {
   tft.fillScreen(TFT_BLACK);
 
   // Sun is static & screen buffer does not reset each frame
+  tft.setSwapBytes(!tft.getSwapBytes());
   tft.pushImage(SUN_X - (SUN_WIDTH / 2), SUN_Y - (SUN_HEIGHT / 2), SUN_WIDTH,
-                SUN_HEIGHT, (uint8_t *)sunImage);
+                SUN_HEIGHT, (uint16_t *)sunImage);
+
   btn.initButtonUL(&tft, 20, 100, 50, 50, TFT_WHITE, TFT_WHITE, TFT_BLACK,
                    "PLAY", 1);
 
