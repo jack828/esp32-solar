@@ -30,6 +30,9 @@
  *
  */
 
+// TODO
+// maybe the frame could be given a sprite to draw on for the screen
+// which might be quicker or less prone to flashing?
 #include "DisplayUi.h"
 
 void LoadingDrawDefault(TFT_eSPI *tft, LoadingStage *stage, uint8_t progress) {
@@ -257,6 +260,7 @@ void DisplayUi::tick() {
       this->state.currentFrame = getNextFrameNumber();
       this->state.ticksSinceLastStateSwitch = 0;
       this->nextFrameNumber = -1;
+      this->tft->fillScreen(TFT_BLACK);
     }
     break;
   case FIXED:
@@ -274,7 +278,6 @@ void DisplayUi::tick() {
     break;
   }
 
-  this->tft->fillScreen(TFT_BLACK);
   this->drawFrame();
   if (shouldDrawIndicators) {
     this->drawIndicator();
@@ -300,6 +303,14 @@ void DisplayUi::drawFrame() {
     }
     int16_t x = 0, y = 0, x1 = 0, y1 = 0;
     switch (this->frameAnimationDirection) {
+    case INSTANT:
+      x = 0;
+      y = 0;
+      x1 = 0;
+      y1 = 0;
+      // Force next tick to go to next frame
+      this->state.ticksSinceLastStateSwitch = this->ticksPerTransition;
+      break;
     case SLIDE_LEFT:
       x = -this->tft->width() * progress;
       y = 0;
@@ -481,3 +492,90 @@ uint8_t DisplayUi::getNextFrameNumber() {
           this->state.frameTransitionDirection) %
          this->frameCount;
 }
+
+/* Test code */
+
+void timeOverlay(TFT_eSPI *_tft, DisplayUiState *state) {
+  /* display->setTextAlignment(TEXT_ALIGN_RIGHT); */
+  /* display->setFont(Monospaced_plain_10); */
+  _tft->setTextDatum(TR_DATUM);
+  _tft->drawString(timeClient.getFormattedTime(), _tft->width(), 0, 2);
+  _tft->setTextDatum(TL_DATUM);
+  _tft->drawString("Free heap: " + String(ESP.getFreeHeap()), 0, 0, 2);
+}
+
+void drawFrame1(TFT_eSPI *_tft, DisplayUiState *state, int16_t x, int16_t y) {
+  state->userData = (void *)"Device";
+  /* display->setTextAlignment(TEXT_ALIGN_LEFT); */
+  /* display->setFont(Monospaced_plain_10); */
+  _tft->drawString("frame1:   ", 0 + x, 20 + y);
+  _tft->drawCircle(100 + x, 200 + y, 50, TFT_WHITE);
+  _tft->drawCircle(200 + x, 200 + y, 50, TFT_WHITE);
+  /* display->drawString(0 + x, 20 + y, "Firmware: " + firmwareVersion); */
+  /* display->drawString(0 + x, 30 + y, "Uptime:   " + uptime); */
+}
+
+void drawFrame2(TFT_eSPI *_tft, DisplayUiState *state, int16_t x, int16_t y) {
+  state->userData = (void *)"Device";
+  /* display->setTextAlignment(TEXT_ALIGN_LEFT); */
+  /* display->setFont(Monospaced_plain_10); */
+  _tft->drawString("frame2:   ", 0 + x, 30 + y);
+  _tft->drawCircle(100 + x, 200 + y, 50, TFT_WHITE);
+  /* display->drawString(0 + x, 20 + y, "Firmware: " + firmwareVersion); */
+  /* display->drawString(0 + x, 30 + y, "Uptime:   " + uptime); */
+
+  int start = millis();
+  _tft->fillScreen(TFT_BLACK);
+  /* Serial.printf("ttcls: %s", millis()-start); */
+  _tft->drawNumber(millis() - start, 0 + x, 200 + y);
+}
+
+LoadingStage loadingStages[] = {
+    {.process = "Connecting to WiFi", .callback = []() { delay(200); }},
+    {.process = "Connecting to NTP", .callback = []() { delay(100); }}};
+
+int LOADING_STAGES_COUNT = sizeof(loadingStages) / sizeof(LoadingStage);
+
+// This array keeps function pointers to all frames
+// frames are the single views that slide in
+FrameCallback frames[] = {drawFrame1, drawFrame2};
+
+// how many frames are there?
+int FRAME_COUNT = sizeof(frames) / sizeof(FrameCallback);
+
+// Overlays are statically drawn on top of a frame eg. a clock
+OverlayCallback overlays[] = {timeOverlay};
+int OVERLAY_COUNT = sizeof(overlays) / sizeof(OverlayCallback);
+
+void initUi() {
+  // The ESP is capable of rendering 60fps in 80Mhz mode
+  // but that won't give you much time for anything else
+  // run it in 160Mhz mode or just set it to 30 fps
+  ui.setTargetFPS(60);
+  /* ui.setActiveSymbol(activeSymbol); */
+  /* ui.setInactiveSymbol(inactiveSymbol); */
+  ui.setIndicatorPosition(BOTTOM);
+  ui.setIndicatorDirection(LEFT_RIGHT);
+  ui.setFrameAnimation(INSTANT);
+  ui.setFrames(frames, FRAME_COUNT);
+  ui.setOverlays(overlays, OVERLAY_COUNT);
+  ui.init();
+  ui.runLoadingProcess(loadingStages, LOADING_STAGES_COUNT);
+}
+
+void looper() {
+  int remainingTimeBudget = ui.update();
+
+  if (remainingTimeBudget > 0) {
+    // You can do some work here
+    // Don't do stuff if you are below your
+    // time budget.
+    /* delay(remainingTimeBudget); */
+  }
+  tft.setCursor(0, tft.height() - 16, 2);
+  tft.print(F(" FPS: "));
+  tft.print((1 * 1000) / (millis() - lastUpdate));
+  tft.println("    ");
+  lastUpdate = millis();
+}
+
