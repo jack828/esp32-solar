@@ -119,6 +119,7 @@ void loop() {
     time_t time = timeClient.getEpochTime() + (count++ * 24 * 60 * 60);
     const tm *timeTm = localtime(&time);
     tft.print(asctime(timeTm));
+    tft.print("    ");
     coordinates(planets, timeTm);
     tft.setCursor(0, 80, 2);
     tft.print("  TTC: ");
