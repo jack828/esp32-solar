@@ -493,11 +493,9 @@ uint8_t DisplayUi::getNextFrameNumber() {
          this->frameCount;
 }
 
-/* Test code */
+/* Test code
 
 void timeOverlay(TFT_eSPI *_tft, DisplayUiState *state) {
-  /* display->setTextAlignment(TEXT_ALIGN_RIGHT); */
-  /* display->setFont(Monospaced_plain_10); */
   _tft->setTextDatum(TR_DATUM);
   _tft->drawString(timeClient.getFormattedTime(), _tft->width(), 0, 2);
   _tft->setTextDatum(TL_DATUM);
@@ -506,27 +504,19 @@ void timeOverlay(TFT_eSPI *_tft, DisplayUiState *state) {
 
 void drawFrame1(TFT_eSPI *_tft, DisplayUiState *state, int16_t x, int16_t y) {
   state->userData = (void *)"Device";
-  /* display->setTextAlignment(TEXT_ALIGN_LEFT); */
-  /* display->setFont(Monospaced_plain_10); */
   _tft->drawString("frame1:   ", 0 + x, 20 + y);
   _tft->drawCircle(100 + x, 200 + y, 50, TFT_WHITE);
   _tft->drawCircle(200 + x, 200 + y, 50, TFT_WHITE);
-  /* display->drawString(0 + x, 20 + y, "Firmware: " + firmwareVersion); */
-  /* display->drawString(0 + x, 30 + y, "Uptime:   " + uptime); */
 }
 
 void drawFrame2(TFT_eSPI *_tft, DisplayUiState *state, int16_t x, int16_t y) {
   state->userData = (void *)"Device";
-  /* display->setTextAlignment(TEXT_ALIGN_LEFT); */
-  /* display->setFont(Monospaced_plain_10); */
   _tft->drawString("frame2:   ", 0 + x, 30 + y);
   _tft->drawCircle(100 + x, 200 + y, 50, TFT_WHITE);
-  /* display->drawString(0 + x, 20 + y, "Firmware: " + firmwareVersion); */
-  /* display->drawString(0 + x, 30 + y, "Uptime:   " + uptime); */
 
   int start = millis();
   _tft->fillScreen(TFT_BLACK);
-  /* Serial.printf("ttcls: %s", millis()-start); */
+  Serial.printf("ttcls: %s", millis()-start);
   _tft->drawNumber(millis() - start, 0 + x, 200 + y);
 }
 
@@ -552,8 +542,8 @@ void initUi() {
   // but that won't give you much time for anything else
   // run it in 160Mhz mode or just set it to 30 fps
   ui.setTargetFPS(60);
-  /* ui.setActiveSymbol(activeSymbol); */
-  /* ui.setInactiveSymbol(inactiveSymbol); */
+  // ui.setActiveSymbol(activeSymbol);
+  // ui.setInactiveSymbol(inactiveSymbol);
   ui.setIndicatorPosition(BOTTOM);
   ui.setIndicatorDirection(LEFT_RIGHT);
   ui.setFrameAnimation(INSTANT);
@@ -570,7 +560,7 @@ void looper() {
     // You can do some work here
     // Don't do stuff if you are below your
     // time budget.
-    /* delay(remainingTimeBudget); */
+    delay(remainingTimeBudget);
   }
   tft.setCursor(0, tft.height() - 16, 2);
   tft.print(F(" FPS: "));
@@ -578,4 +568,4 @@ void looper() {
   tft.println("    ");
   lastUpdate = millis();
 }
-
+*/
