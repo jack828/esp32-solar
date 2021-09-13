@@ -147,8 +147,10 @@ void loop() {
 
       // Draw slightly larger circle to remove previous pixel
       tft.fillCircle((int)planetX, (int)planetY, 8, TFT_BLACK);
-      // Draw planet
-      tft.fillCircle((int)planetX, (int)planetY, 5, colours[planetIndex]);
+      // Draw planet image
+      tft.pushImage(planetX - (PLANET_WIDTH / 2),
+                    planetY - (PLANET_HEIGHT / 2), PLANET_WIDTH, PLANET_HEIGHT,
+                    (uint16_t *)planetImages[planetIndex]);
     }
     tft.print("  TTD: ");
     tft.print(millis() - start);
