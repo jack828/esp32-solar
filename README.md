@@ -1,13 +1,21 @@
 # esp32-solar
 
+## What's it do?
+
+This project was another bordom-fighting exercise. It shows the positions of the planets at a particular date and time.
+
+It also lets you "play" the animation through at about ~30 FPS (which ticks at a rate of 1 day per frame).
+
+The maths used in this project is from [Paul Schlyter](https://stjarnhimlen.se/comp/tutorial.html), and I encourage you to read it as he explains it very well.
+
 ## The Board
 
-Using Makerfabs' ESP32 Touch with Camera (capacative)
+Using [Makerfabs' ESP32 Touch with Camera (capacitive)](https://www.makerfabs.com/esp32-3.5-inch-tft-touch-capacitive-with-camera.html)
 
 Which has:
-  1. 3.5inch TFT ILI9488 driver
+  1. 3.5inch TFT ILI9488
   2. SD card Reader
-  3. I2C Touch Screen (NS2009 or Ft6236)
+  3. I2C Touch Screen (NS2009 or FT6236)
   4. OV2640 Camera
 
 ## Prerequisites
@@ -25,6 +33,8 @@ Install NTPClient
 ## Credits
 
 Lots of code and main inspiration from dr-mod's repo! https://github.com/dr-mod/pico-solar-system
+
+Sprites generated using [image2cpp](https://jackburgess.dev/tools/image2cpp)
 
 ## Author
 
