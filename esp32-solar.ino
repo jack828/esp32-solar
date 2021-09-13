@@ -70,7 +70,7 @@ void loop() {
   tft.print(pos[0]);
   tft.print(" Y: ");
   tft.print(pos[1]);
-  tft.print(" Pressed: ");
+  tft.print(" BTN: ");
 
   if (pos[0] != -1 && pos[1] != -1 &&
       btn.contains(tft.width() - pos[0], pos[1])) {
@@ -121,9 +121,11 @@ void loop() {
     tft.print(asctime(timeTm));
     tft.print("    ");
     coordinates(planets, timeTm);
+    /* Time To Calculate
     tft.setCursor(0, 80, 2);
     tft.print("  TTC: ");
     tft.print(millis() - start);
+    */
 
     start = millis();
     /* DRAW PLANETS */
@@ -152,8 +154,10 @@ void loop() {
                     planetY - (PLANET_HEIGHT / 2), PLANET_WIDTH, PLANET_HEIGHT,
                     (uint16_t *)planetImages[planetIndex]);
     }
+    /* Time To Draw
     tft.print("  TTD: ");
     tft.print(millis() - start);
+    */
   }
 }
 
