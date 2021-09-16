@@ -8,6 +8,8 @@ It also lets you "play" the animation through at about ~30 FPS (which ticks at a
 
 The maths used in this project is from [Paul Schlyter](https://stjarnhimlen.se/comp/tutorial.html), and I encourage you to read it as he explains it very well.
 
+![board image](https://user-images.githubusercontent.com/6363719/133695314-29d2a962-7d25-4262-a45c-797d4be26b19.png)
+
 ## The Board
 
 Using [Makerfabs' ESP32 Touch with Camera (capacitive)](https://www.makerfabs.com/esp32-3.5-inch-tft-touch-capacitive-with-camera.html)
